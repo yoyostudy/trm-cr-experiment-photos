@@ -1,2 +1,4 @@
 ID,Date,lr,bs,best_acc,PhotoURL,W&B,Notes
 exp002,2026-04-28,0.0005,128,0.88,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/main/exp002_result.png,,
+exp11_nsup4_8_16_mix_10000_000959_stage1_0qr1zveh,2026-03-20,,,,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/main/exp11_nsup4_8_16_mix_10000_000959_stage1_0qr1zveh.png,https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/0qr1zveh,
+exp12_nsup16_curriculum_10000_resume_001054_stage1_h1o6ig1c,2026-03-20,,,,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/main/exp12_nsup16_curriculum_10000_resume_001054_stage1_h1o6ig1c.png,https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/h1o6ig1c,
