@@ -1,3 +1,0 @@
-ID,Date,lr,bs,best_acc,PhotoURL,W&B,Notes
-cr_0413_baseline_220918_stage2,2026-04-14,0.0001,768,,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0413_baseline_220918,
-cp_0413_cr_trace_mix_164606_stage2,2026-04-13,0.0001,768,,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cp_0413_cr_trace_mix_164606_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cp_0413_cr_trace_mix_164606,
