@@ -1,2 +1,2 @@
-Date,H_cycles,L_cycles,max_halt_steps,exact_acc @ halt_or_nsup 16,wandb_id
-2026-04-14,1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,cr_0413_baseline_220918
+H_cycles,L_cycles,max_halt_steps,exact_acc @ halt_or_nsup 16,exact_acc @ halt_or_nsup 32,exact_acc @ halt_or_nsup 64,wandb_id
+1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png,cr_0413_baseline_220918
