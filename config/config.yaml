@@ -1,0 +1,73 @@
+# Curriculum learning config (gaussian variant).
+#
+# Same hard-gold-path mix as cp_0420_cr_trace_mix, but the intermediate
+# board's empty-cell count is drawn per-sample from a Gaussian instead of
+# being a fixed constant. This smooths the per-stage empty-cell distribution
+# so the transition into the natural stage-3 distribution (~54-58 empties)
+# is less abrupt.
+#
+# Build the curriculum datasets once before training:
+#
+# python -m dataset.build_curriculum_dataset \
+#   --source-dir data/sudoku-extreme-1k-aug-1000 \
+#   --output-dir data/sudoku-extreme-1k-aug-1000-stage1-hard-gp-gaussian \
+#   --empty-cells-mean 20 --empty-cells-std 5 --hard-only
+#
+#   python -m dataset.build_curriculum_dataset \
+#     --source-dir data/sudoku-extreme-1k-aug-1000 \
+#     --output-dir data/sudoku-extreme-1k-aug-1000-stage2-hard-gp-gaussian \
+#     --empty-cells-mean 40 --empty-cells-std 5 --hard-only
+#
+# python -m dataset.build_curriculum_dataset \
+#   --source-dir data/sudoku-extreme-1k-aug-1000 \
+#   --output-dir data/sudoku-extreme-1k-aug-1000-stage3-hard-gp-gaussian \
+#   --empty-cells-mean 45 --empty-cells-std 5 --hard-only
+#
+# python -m dataset.build_curriculum_dataset \
+#   --source-dir data/sudoku-extreme-1k-aug-1000 \
+#   --output-dir data/sudoku-extreme-1k-aug-1000-stage4-hard-gp-gaussian \
+#   --empty-cells-mean 50 --empty-cells-std 5 --hard-only
+
+
+#
+# Stage 1. hard -> intermediate @ N(20, 5) empty cells; easy/medium unchanged
+# Stage 2. hard -> intermediate @ N(40, 5) empty cells; easy/medium unchanged
+# Stage 3. hard -> intermediate @ N(45, 5) empty cells; easy/medium unchanged
+# Stage 4. hard -> intermediate @ N(50, 5) empty cells; easy/medium unchanged
+# Stage 5. original dataset (no replacement)
+#
+# Usage: bash pretrain_cr.sh exp_0421_cr_trace_mix_gaussian.yaml
+
+name: exp_0421_cr_trace_mix_gaussian
+
+depth:
+  H_cycles: 1
+  L_cycles: 2
+  L_layers: 2
+
+stages:
+  - data_path: data/sudoku-extreme-1k-aug-1000-stage1-hard-gp-gaussian
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
+  - data_path: data/sudoku-extreme-1k-aug-1000-stage2-hard-gp-gaussian
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
+  - data_path: data/sudoku-extreme-1k-aug-1000-stage3-hard-gp-gaussian
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
+  - data_path: data/sudoku-extreme-1k-aug-1000-stage4-hard-gp-gaussian
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
+  - data_path: data/sudoku-extreme-1k-aug-1000
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
