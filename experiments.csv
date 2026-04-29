@@ -1,4 +1,4 @@
-wandb_id,config,H_cycles,L_cycles,max_halt_steps,exact_acc @ halt_or_nsup 16,exact_acc @ halt_or_nsup 32,exact_acc @ halt_or_nsup 64
+wandb_id,config,H_cycles,L_cycles,max_halt_steps,best exact_acc @ halt_or_nsup 16,exact_acc @ halt_or_nsup 16,exact_acc @ halt_or_nsup 32,exact_acc @ halt_or_nsup 64
 cr_0413_baseline_220918,"# Baseline, no CR on depth, no CR on data
 #
 # Usage: bash pretrain_cr.sh cr_0413_baseline.yaml
@@ -26,7 +26,7 @@ stages:
     num_epochs: 30000
     batch_size: 768
     eval_interval: 1000
-",1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
+",1,2,16,0.597177,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
 exp_0419_cr_baseline_004937,"# Baseline, no CR on depth, no CR on data
 #
 # Usage: bash pretrain_cr.sh exp_0419_cr_baseline.yaml
@@ -54,7 +54,7 @@ stages:
     num_epochs: 30000
     batch_size: 768
     eval_interval: 1000
-",2,4,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0419_cr_baseline_004937_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0419_cr_baseline_004937_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0419_cr_baseline_004937_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
+",2,4,16,0.687549,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0419_cr_baseline_004937_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0419_cr_baseline_004937_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0419_cr_baseline_004937_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
 exp_0413_cr_trace_mix_gaussian_210715,"# Curriculum learning config (gaussian variant).
 #
 # Same hard-gold-path mix as cp_0413_cr_trace_mix, but the intermediate
@@ -104,7 +104,7 @@ stages:
     num_epochs: 30000
     batch_size: 768
     eval_interval: 1000
-",1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0413_cr_trace_mix_gaussian_210715_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0413_cr_trace_mix_gaussian_210715_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0413_cr_trace_mix_gaussian_210715_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
+",1,2,16,0.569283,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0413_cr_trace_mix_gaussian_210715_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0413_cr_trace_mix_gaussian_210715_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0413_cr_trace_mix_gaussian_210715_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
 exp_0420_cr_trace_mix_gaussian_dense_141633,"# Curriculum learning config (gaussian, dense variant).
 #
 # 20-stage progression with per-sample empty-cell count drawn from a Gaussian
@@ -229,7 +229,7 @@ stages:
     num_epochs: 10000
     batch_size: 768
     eval_interval: 500
-",1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0420_cr_trace_mix_gaussian_dense_141633_stage20/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0420_cr_trace_mix_gaussian_dense_141633_stage20/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0420_cr_trace_mix_gaussian_dense_141633_stage20/training_dynamics/exact_acc_at_halt_or_nsup64.png
+",1,2,16,0.532132,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0420_cr_trace_mix_gaussian_dense_141633_stage20/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0420_cr_trace_mix_gaussian_dense_141633_stage20/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0420_cr_trace_mix_gaussian_dense_141633_stage20/training_dynamics/exact_acc_at_halt_or_nsup64.png
 exp_0421_cr_trace_mix_gaussian_192914,"# Curriculum learning config (gaussian variant).
 #
 # Same hard-gold-path mix as cp_0420_cr_trace_mix, but the intermediate
@@ -303,7 +303,7 @@ stages:
     num_epochs: 10000
     batch_size: 768
     eval_interval: 1000
-",1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0421_cr_trace_mix_gaussian_192914_stage4/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0421_cr_trace_mix_gaussian_192914_stage4/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0421_cr_trace_mix_gaussian_192914_stage4/training_dynamics/exact_acc_at_halt_or_nsup64.png
+",1,2,16,0.532612,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0421_cr_trace_mix_gaussian_192914_stage4/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0421_cr_trace_mix_gaussian_192914_stage4/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0421_cr_trace_mix_gaussian_192914_stage4/training_dynamics/exact_acc_at_halt_or_nsup64.png
 exp_0414_bt_004417,"# Curriculum learning config (BT)
 #
 # Stage 1. hard -> wrong son of branch guessing node g1; easy/medium unchanged
@@ -341,7 +341,7 @@ stages:
     num_epochs: 30000
     batch_size: 768
     eval_interval: 1000
-",1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_004417_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_004417_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_004417_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
+",1,2,16,0.582091,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_004417_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_004417_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_004417_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
 exp_0414_bt_descendents_015622,"# Curriculum learning config (BT by wrong-subtree depth, hard-only replacement)
 #
 # Stage 1. hard -> wrong child  of g1 (last branching guess on gold path)
@@ -383,4 +383,4 @@ stages:
     num_epochs: 30000
     batch_size: 768
     eval_interval: 1000
-",1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
+",1,2,16,0.607629,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
