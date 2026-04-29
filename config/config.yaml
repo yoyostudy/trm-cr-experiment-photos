@@ -1,0 +1,124 @@
+# Curriculum learning config (gaussian, dense variant).
+#
+# 20-stage progression with per-sample empty-cell count drawn from a Gaussian
+# N(mean, 5). Stages match build_data.sh — means ramp from 31 to 70 over 20
+# stages (2500 epochs each) for a dense, near-continuous curriculum. Build
+# the curriculum datasets once before training by running:
+#
+#   bash build_data.sh
+#
+# Usage: bash pretrain_cr.sh exp_0420_cr_trace_mix_gaussian_dense.yaml
+
+name: exp_0420_cr_trace_mix_gaussian_dense
+
+depth:
+  H_cycles: 1
+  L_cycles: 2
+  L_layers: 2
+
+stages:
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-31-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-35-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-39-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-42-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-45-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-47-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-49-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-51-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-53-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-55-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-57-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-58-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-60-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-61-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-63-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-64-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-66-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-67-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-68-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000-hard-gp-gaussian-empty_cell-70-5
+    nsup: 16
+    num_epochs: 2500
+    batch_size: 768
+    eval_interval: 500
+  - data_path: data/sudoku-extreme-1k-aug-1000
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 500
