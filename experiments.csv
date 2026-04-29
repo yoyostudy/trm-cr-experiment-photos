@@ -1,5 +1,5 @@
-wandb_id,H_cycles,L_cycles,max_halt_steps,exact_acc @ halt_or_nsup 16,exact_acc @ halt_or_nsup 32,exact_acc @ halt_or_nsup 64,config
-cr_0413_baseline_220918,1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png,"# Baseline, no CR on depth, no CR on data
+wandb_id,config,H_cycles,L_cycles,max_halt_steps,exact_acc @ halt_or_nsup 16,exact_acc @ halt_or_nsup 32,exact_acc @ halt_or_nsup 64
+cr_0413_baseline_220918,"# Baseline, no CR on depth, no CR on data
 #
 # Usage: bash pretrain_cr.sh cr_0413_baseline.yaml
 
@@ -26,8 +26,36 @@ stages:
     num_epochs: 30000
     batch_size: 768
     eval_interval: 1000
-"
-exp_0413_cr_trace_mix_gaussian_210715,1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0413_cr_trace_mix_gaussian_210715_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0413_cr_trace_mix_gaussian_210715_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0413_cr_trace_mix_gaussian_210715_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png,"# Curriculum learning config (gaussian variant).
+",1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
+exp_0419_cr_baseline_004937,"# Baseline, no CR on depth, no CR on data
+#
+# Usage: bash pretrain_cr.sh exp_0419_cr_baseline.yaml
+
+name: exp_0419_cr_baseline
+
+depth:
+  H_cycles: 2
+  L_cycles: 4
+  L_layers: 2
+
+stages:
+  - data_path: data/sudoku-extreme-1k-aug-1000
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
+  - data_path: data/sudoku-extreme-1k-aug-1000
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
+  - data_path: data/sudoku-extreme-1k-aug-1000
+    nsup: 16
+    num_epochs: 30000
+    batch_size: 768
+    eval_interval: 1000
+",2,4,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0419_cr_baseline_004937_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0419_cr_baseline_004937_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0419_cr_baseline_004937_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
+exp_0413_cr_trace_mix_gaussian_210715,"# Curriculum learning config (gaussian variant).
 #
 # Same hard-gold-path mix as cp_0413_cr_trace_mix, but the intermediate
 # board's empty-cell count is drawn per-sample from a Gaussian instead of
@@ -76,116 +104,8 @@ stages:
     num_epochs: 30000
     batch_size: 768
     eval_interval: 1000
-"
-exp_0414_bt_004417,1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_004417_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_004417_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_004417_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png,"# Curriculum learning config (BT)
-#
-# Stage 1. hard -> wrong son of branch guessing node g1; easy/medium unchanged
-# Stage 2. hard -> wrong son of branch guessing node g2; easy/medium unchanged
-# Stage 3. original dataset (no replacement)
-
-# g1 = last branching guess on gold path (fewer empty cells, deeper)
-# g2 = second-to-last branching guess on gold path (more empty cells, shallower)
-# empty_cell (g1) < empty_cell (g2)
-# empty_cell (wc_1) = empty_cell (g1) - 1
-# empty_cell (wc_2) = empty_cell (g2) - 1
-#
-# Usage: bash pretrain_cr.sh exp_0414_bt.yaml
-
-name: exp_0414_bt
-
-depth:
-  H_cycles: 1
-  L_cycles: 2
-  L_layers: 2
-
-stages:
-  - data_path: data/sudoku-extreme-1k-aug-1000-bt-stage1-hard
-    nsup: 16
-    num_epochs: 10000
-    batch_size: 768
-    eval_interval: 1000
-  - data_path: data/sudoku-extreme-1k-aug-1000-bt-stage2-hard
-    nsup: 16
-    num_epochs: 10000
-    batch_size: 768
-    eval_interval: 1000
-  - data_path: data/sudoku-extreme-1k-aug-1000
-    nsup: 16
-    num_epochs: 30000
-    batch_size: 768
-    eval_interval: 1000
-"
-exp_0414_bt_descendents_015622,1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png,"# Curriculum learning config (BT by wrong-subtree depth, hard-only replacement)
-#
-# Stage 1. hard -> wrong child  of g1 (last branching guess on gold path)
-#                  bt-depth=1   (one wrong step)
-#          easy/medium unchanged
-# Stage 2. hard -> wrong grandchild of g2 (second-last branching guess)
-#                  bt-depth=2   (wrong step + one more walk step)
-#          easy/medium unchanged
-# Stage 3. original dataset (no replacement)
-#
-# g1 = last branching guess (deeper, fewer empty cells)
-# g2 = second-to-last branching guess (shallower, more empty cells)
-# Extra walk steps inside the wrong subtree reuse find_one_propagation and
-# MRV guess-cell selection (see utils/sudoku_with_wrong_child.py ::
-# get_wrong_descendants).
-#
-# Usage: bash pretrain_cr.sh exp_0414_bt_descendents.yaml
-
-name: exp_0414_bt_descendents
-
-depth:
-  H_cycles: 1
-  L_cycles: 2
-  L_layers: 2
-
-stages:
-  - data_path: data/sudoku-extreme-1k-aug-1000-bt-s1-d1-hard
-    nsup: 16
-    num_epochs: 10000
-    batch_size: 768
-    eval_interval: 1000
-  - data_path: data/sudoku-extreme-1k-aug-1000-bt-s2-d2-hard
-    nsup: 16
-    num_epochs: 10000
-    batch_size: 768
-    eval_interval: 1000
-  - data_path: data/sudoku-extreme-1k-aug-1000
-    nsup: 16
-    num_epochs: 30000
-    batch_size: 768
-    eval_interval: 1000
-"
-exp_0419_cr_baseline_004937,2,4,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0419_cr_baseline_004937_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0419_cr_baseline_004937_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0419_cr_baseline_004937_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png,"# Baseline, no CR on depth, no CR on data
-#
-# Usage: bash pretrain_cr.sh exp_0419_cr_baseline.yaml
-
-name: exp_0419_cr_baseline
-
-depth:
-  H_cycles: 2
-  L_cycles: 4
-  L_layers: 2
-
-stages:
-  - data_path: data/sudoku-extreme-1k-aug-1000
-    nsup: 16
-    num_epochs: 10000
-    batch_size: 768
-    eval_interval: 1000
-  - data_path: data/sudoku-extreme-1k-aug-1000
-    nsup: 16
-    num_epochs: 10000
-    batch_size: 768
-    eval_interval: 1000
-  - data_path: data/sudoku-extreme-1k-aug-1000
-    nsup: 16
-    num_epochs: 30000
-    batch_size: 768
-    eval_interval: 1000
-"
-exp_0420_cr_trace_mix_gaussian_dense_141633,1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0420_cr_trace_mix_gaussian_dense_141633_stage20/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0420_cr_trace_mix_gaussian_dense_141633_stage20/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0420_cr_trace_mix_gaussian_dense_141633_stage20/training_dynamics/exact_acc_at_halt_or_nsup64.png,"# Curriculum learning config (gaussian, dense variant).
+",1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0413_cr_trace_mix_gaussian_210715_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0413_cr_trace_mix_gaussian_210715_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0413_cr_trace_mix_gaussian_210715_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
+exp_0420_cr_trace_mix_gaussian_dense_141633,"# Curriculum learning config (gaussian, dense variant).
 #
 # 20-stage progression with per-sample empty-cell count drawn from a Gaussian
 # N(mean, 5). Stages match build_data.sh — means ramp from 31 to 70 over 20
@@ -309,8 +229,8 @@ stages:
     num_epochs: 10000
     batch_size: 768
     eval_interval: 500
-"
-exp_0421_cr_trace_mix_gaussian_192914,1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0421_cr_trace_mix_gaussian_192914_stage4/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0421_cr_trace_mix_gaussian_192914_stage4/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0421_cr_trace_mix_gaussian_192914_stage4/training_dynamics/exact_acc_at_halt_or_nsup64.png,"# Curriculum learning config (gaussian variant).
+",1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0420_cr_trace_mix_gaussian_dense_141633_stage20/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0420_cr_trace_mix_gaussian_dense_141633_stage20/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0420_cr_trace_mix_gaussian_dense_141633_stage20/training_dynamics/exact_acc_at_halt_or_nsup64.png
+exp_0421_cr_trace_mix_gaussian_192914,"# Curriculum learning config (gaussian variant).
 #
 # Same hard-gold-path mix as cp_0420_cr_trace_mix, but the intermediate
 # board's empty-cell count is drawn per-sample from a Gaussian instead of
@@ -383,4 +303,84 @@ stages:
     num_epochs: 10000
     batch_size: 768
     eval_interval: 1000
-"
+",1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0421_cr_trace_mix_gaussian_192914_stage4/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0421_cr_trace_mix_gaussian_192914_stage4/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0421_cr_trace_mix_gaussian_192914_stage4/training_dynamics/exact_acc_at_halt_or_nsup64.png
+exp_0414_bt_004417,"# Curriculum learning config (BT)
+#
+# Stage 1. hard -> wrong son of branch guessing node g1; easy/medium unchanged
+# Stage 2. hard -> wrong son of branch guessing node g2; easy/medium unchanged
+# Stage 3. original dataset (no replacement)
+
+# g1 = last branching guess on gold path (fewer empty cells, deeper)
+# g2 = second-to-last branching guess on gold path (more empty cells, shallower)
+# empty_cell (g1) < empty_cell (g2)
+# empty_cell (wc_1) = empty_cell (g1) - 1
+# empty_cell (wc_2) = empty_cell (g2) - 1
+#
+# Usage: bash pretrain_cr.sh exp_0414_bt.yaml
+
+name: exp_0414_bt
+
+depth:
+  H_cycles: 1
+  L_cycles: 2
+  L_layers: 2
+
+stages:
+  - data_path: data/sudoku-extreme-1k-aug-1000-bt-stage1-hard
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
+  - data_path: data/sudoku-extreme-1k-aug-1000-bt-stage2-hard
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
+  - data_path: data/sudoku-extreme-1k-aug-1000
+    nsup: 16
+    num_epochs: 30000
+    batch_size: 768
+    eval_interval: 1000
+",1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_004417_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_004417_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_004417_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
+exp_0414_bt_descendents_015622,"# Curriculum learning config (BT by wrong-subtree depth, hard-only replacement)
+#
+# Stage 1. hard -> wrong child  of g1 (last branching guess on gold path)
+#                  bt-depth=1   (one wrong step)
+#          easy/medium unchanged
+# Stage 2. hard -> wrong grandchild of g2 (second-last branching guess)
+#                  bt-depth=2   (wrong step + one more walk step)
+#          easy/medium unchanged
+# Stage 3. original dataset (no replacement)
+#
+# g1 = last branching guess (deeper, fewer empty cells)
+# g2 = second-to-last branching guess (shallower, more empty cells)
+# Extra walk steps inside the wrong subtree reuse find_one_propagation and
+# MRV guess-cell selection (see utils/sudoku_with_wrong_child.py ::
+# get_wrong_descendants).
+#
+# Usage: bash pretrain_cr.sh exp_0414_bt_descendents.yaml
+
+name: exp_0414_bt_descendents
+
+depth:
+  H_cycles: 1
+  L_cycles: 2
+  L_layers: 2
+
+stages:
+  - data_path: data/sudoku-extreme-1k-aug-1000-bt-s1-d1-hard
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
+  - data_path: data/sudoku-extreme-1k-aug-1000-bt-s2-d2-hard
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
+  - data_path: data/sudoku-extreme-1k-aug-1000
+    nsup: 16
+    num_epochs: 30000
+    batch_size: 768
+    eval_interval: 1000
+",1,2,16,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png
