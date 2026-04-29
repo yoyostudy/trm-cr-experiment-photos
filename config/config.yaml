@@ -1,0 +1,37 @@
+# Curriculum learning config (BT)
+#
+# Stage 1. hard -> wrong son of branch guessing node g1; easy/medium unchanged
+# Stage 2. hard -> wrong son of branch guessing node g2; easy/medium unchanged
+# Stage 3. original dataset (no replacement)
+
+# g1 = last branching guess on gold path (fewer empty cells, deeper)
+# g2 = second-to-last branching guess on gold path (more empty cells, shallower)
+# empty_cell (g1) < empty_cell (g2)
+# empty_cell (wc_1) = empty_cell (g1) - 1
+# empty_cell (wc_2) = empty_cell (g2) - 1
+#
+# Usage: bash pretrain_cr.sh exp_0414_bt.yaml
+
+name: exp_0414_bt
+
+depth:
+  H_cycles: 1
+  L_cycles: 2
+  L_layers: 2
+
+stages:
+  - data_path: data/sudoku-extreme-1k-aug-1000-bt-stage1-hard
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
+  - data_path: data/sudoku-extreme-1k-aug-1000-bt-stage2-hard
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
+  - data_path: data/sudoku-extreme-1k-aug-1000
+    nsup: 16
+    num_epochs: 30000
+    batch_size: 768
+    eval_interval: 1000
