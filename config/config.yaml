@@ -1,0 +1,27 @@
+# Baseline, no CR on depth, no CR on data
+#
+# Usage: bash pretrain_cr.sh exp_0419_cr_baseline.yaml
+
+name: exp_0419_cr_baseline
+
+depth:
+  H_cycles: 2
+  L_cycles: 4
+  L_layers: 2
+
+stages:
+  - data_path: data/sudoku-extreme-1k-aug-1000
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
+  - data_path: data/sudoku-extreme-1k-aug-1000
+    nsup: 16
+    num_epochs: 10000
+    batch_size: 768
+    eval_interval: 1000
+  - data_path: data/sudoku-extreme-1k-aug-1000
+    nsup: 16
+    num_epochs: 30000
+    batch_size: 768
+    eval_interval: 1000
