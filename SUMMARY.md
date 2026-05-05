@@ -1,6 +1,6 @@
 # Experiment summary: `cr_0429_derive_ignore_m3_194001`
 
-_Generated: 2026-05-05 14:51:10_
+_Generated: 2026-05-05 14:57:24_
 
 ## Config
 
@@ -25,6 +25,18 @@ _Generated: 2026-05-05 14:51:10_
 
 - best exact_acc on this run: **0.5948** @ step 59892
 - baseline_220918 best exact_acc: 0.5998 @ step 59892
+
+## Snapshot eval (36 ckpts evaluated, nsup={16,32,64})
+
+Latest checkpoint:
+
+_step 63798_  (baseline ref: `stage2_step_63798`)
+
+| nsup | cov | exact@halt | exact@halt_or_max | exact@max || base cov | base exact@halt | base exact@halt_or_max | base exact@max | Δexact@halt_or_max |
+|---|---|---|---|---|---|---|---|---|---|
+| 16 | 0.6098 | 0.9431 | 0.5758 | 0.5401 | 0.6266 | 0.9212 | 0.5776 | 0.5697 | -0.0018 |
+| 32 | 0.6706 | 0.9416 | 0.6316 | 0.5610 | 0.7084 | 0.9234 | 0.6543 | 0.5721 | -0.0227 |
+| 64 | 0.7088 | 0.9367 | 0.6640 | 0.4752 | 0.7641 | 0.9226 | 0.7050 | 0.5484 | -0.0409 |
 
 ## Wandb run
 
