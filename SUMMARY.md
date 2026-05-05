@@ -1,6 +1,6 @@
 # Experiment summary: `cr_0429_derive_ignore_m3_194001`
 
-_Generated: 2026-05-05 14:57:24_
+_Generated: 2026-05-05 15:01:08_
 
 ## Config
 
@@ -28,7 +28,7 @@ _Generated: 2026-05-05 14:57:24_
 
 ## Snapshot eval (36 ckpts evaluated, nsup={16,32,64})
 
-Latest checkpoint:
+Latest checkpoint (numerically last step):
 
 _step 63798_  (baseline ref: `stage2_step_63798`)
 
