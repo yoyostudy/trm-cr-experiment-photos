@@ -1,6 +1,6 @@
 # Experiment summary: `cr_0429_derive_ignore_v2_154835`
 
-_Generated: 2026-05-05 14:57:10_
+_Generated: 2026-05-05 14:59:46_
 
 ## Config
 
@@ -27,15 +27,15 @@ _Generated: 2026-05-05 14:57:10_
 
 ## Snapshot eval (44 ckpts evaluated, nsup={16,32,64})
 
-Latest checkpoint:
+Latest checkpoint (numerically last step):
 
-_step 9114_  (baseline ref: `stage0_step_9114`)
+_step 65100_  (baseline ref: `stage2_step_65100`)
 
 | nsup | cov | exact@halt | exact@halt_or_max | exact@max || base cov | base exact@halt | base exact@halt_or_max | base exact@max | Δexact@halt_or_max |
 |---|---|---|---|---|---|---|---|---|---|
-| 16 | 0.1734 | 0.7750 | 0.1355 | 0.1518 | 0.2044 | 0.8365 | 0.1717 | 0.1882 | -0.0362 |
-| 32 | 0.2139 | 0.7096 | 0.1519 | 0.1634 | 0.2335 | 0.7942 | 0.1856 | 0.2056 | -0.0336 |
-| 64 | 0.2397 | 0.6591 | 0.1580 | 0.1696 | 0.2498 | 0.7635 | 0.1908 | 0.2133 | -0.0327 |
+| 16 | 0.5566 | 0.8569 | 0.4773 | 0.4485 | 0.6195 | 0.9154 | 0.5676 | 0.4976 | -0.0903 |
+| 32 | 0.6186 | 0.8631 | 0.5341 | 0.3686 | 0.7003 | 0.9184 | 0.6434 | 0.6214 | -0.1093 |
+| 64 | 0.6559 | 0.8643 | 0.5669 | 0.1841 | 0.7583 | 0.9177 | 0.6959 | 0.6753 | -0.1290 |
 
 ## Wandb run
 
