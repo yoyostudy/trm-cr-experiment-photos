@@ -1,6 +1,6 @@
 # Experiment summary: `cr_0429_derive_ignore_m3_194001`
 
-_Generated: 2026-05-05 16:06:45_
+_Generated: 2026-05-05 16:16:22_
 
 ## Config
 
@@ -13,7 +13,7 @@ _Generated: 2026-05-05 16:06:45_
 
 - run state: **finished**
 - total runtime: 16.7 h
-- final step: 63860
+- final step: 63903
 
 ## Final in-training eval (`all.*`)
 
