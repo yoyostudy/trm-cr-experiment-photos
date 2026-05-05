@@ -1,41 +1,41 @@
 # Experiment summary: `cr_0429_derive_ignore_194437`
 
-_Generated: 2026-04-30 10:05:05_
+_Generated: 2026-05-05 15:23:19_
 
 ## Config
 
 - arch: H_cycles=**1** L_cycles=**2** L_layers=2 halt_max_steps=16
 - loss: `losses@DeriveIgnoreACTLossHead`
 - batch_size: 768
-- epochs: 30000
+- epochs: 20000
 - data: ['data/sudoku-extreme-1k-aug-1000']
 
 - run state: **finished**
-- total runtime: 6.8 h
-- final step: 39388
+- total runtime: 11.3 h
+- final step: 65909
 
 ## Final in-training eval (`all.*`)
 
-- step: **39060**
-- cell_acc: **0.8724**
-- exact_acc: **0.6349**
-- baseline_220918 @ same step (interp):  cell=0.8414  exact=0.2576
-- **Δcell = +0.0310**   **Δexact = +0.3773**
+- step: **59892**
+- cell_acc: **0.8541**
+- exact_acc: **0.3602**
+- baseline_220918 @ same step (interp):  cell=0.8657  exact=0.5998
+- **Δcell = -0.0116**   **Δexact = -0.2396**
 
-- best exact_acc on this run: **0.6391** @ step 37758
+- best exact_acc on this run: **0.6510** @ step 46872
 - baseline_220918 best exact_acc: 0.5998 @ step 59892
 
-## Snapshot eval (30 ckpts evaluated, nsup={16,32,64})
+## Snapshot eval (50 ckpts evaluated, nsup={16,32,64})
 
-Latest checkpoint:
+Latest checkpoint (numerically last step):
 
-_step 9114_  (baseline ref: `stage0_step_9114`)
+_step 65100_  (baseline ref: `stage2_step_65100`)
 
 | nsup | cov | exact@halt | exact@halt_or_max | exact@max || base cov | base exact@halt | base exact@halt_or_max | base exact@max | Δexact@halt_or_max |
 |---|---|---|---|---|---|---|---|---|---|
-| 16 | 0.1734 | 0.7730 | 0.1352 | 0.1518 | 0.2044 | 0.8365 | 0.1717 | 0.1882 | -0.0365 |
-| 32 | 0.2136 | 0.7090 | 0.1516 | 0.1635 | 0.2335 | 0.7942 | 0.1856 | 0.2056 | -0.0339 |
-| 64 | 0.2396 | 0.6585 | 0.1578 | 0.1698 | 0.2498 | 0.7635 | 0.1908 | 0.2133 | -0.0329 |
+| 16 | 0.5853 | 0.8783 | 0.5144 | 0.1769 | 0.6195 | 0.9154 | 0.5676 | 0.4976 | -0.0531 |
+| 32 | 0.6592 | 0.8839 | 0.5828 | 0.0414 | 0.7003 | 0.9184 | 0.6434 | 0.6214 | -0.0605 |
+| 64 | 0.7098 | 0.8844 | 0.6278 | 0.0108 | 0.7583 | 0.9177 | 0.6959 | 0.6753 | -0.0681 |
 
 ## Wandb run
 
