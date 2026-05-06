@@ -13,6 +13,50 @@ Working directory: `/local-scratch/localhome/zwa204/tmp_0506/TinyRecursiveModels
 
 ---
 
+## Status (2026-05-06)
+
+- ✅ **Phase 1 script written** at `tmp_0506/TinyRecursiveModels/build_solver_trajectory.py`
+- ✅ **Sanity-tested on 100 puzzles** of sudoku-extreme test set
+- ⏸ Phases 2/3/4 pending GPU availability (current ablations finish ~17:00–19:00 today)
+
+### Sanity-test findings (100 puzzles, sudoku-extreme test)
+
+```
+max solver step:                         18    (some cells need 18 propagations)
+puzzles fully solvable (naked+hidden):   16 / 100  (16%)
+avg unsolved cells per puzzle:           ~40-50 / 81  (need backtracking)
+runtime:                                 0.2 s for 100 puzzles
+                                         → ≈ 13 min for full 422k test set on 1 CPU
+                                         → ≈ 1 min with 16 workers
+```
+
+### Key implications for the design questions
+
+1. **Cells with `solver_step == -1` are the majority in hard puzzles**, not a
+   rare edge case. ~50% of cells in sudoku-extreme are *not* solvable by
+   single-propagation alone. The choice of how to supervise them is the most
+   consequential decision.
+
+2. **Max solver step (18) ≥ halt_max_steps (16)**. Some cells naturally need
+   >16 propagations. Truncation will collapse the deepest few buckets into
+   ACT step 16.
+
+3. **Naked+hidden single is the bottleneck.** Most sudoku-extreme puzzles
+   require backtracking, which the `solver_step` curriculum can't capture.
+   This argues for a *fallback*: at the final ACT step, supervise the `-1`
+   cells with full GT.
+
+### Updated default decisions (post-sanity-test)
+
+| Question | Default |
+|---|---|
+| Cumulative vs strict mode | **cumulative** (stable bootstrapping; many cells supervised early) |
+| Cells with `solver_step == -1` | **option b — supervise at the LAST ACT step (k=16) with full GT** |
+| Truncate `solver_step > 16` | **truncate to 16** (only a tail of cells; minimal info loss) |
+| Discount γ | start with **1.0 (uniform)**; try 0.9 only if uniform underperforms |
+
+---
+
 ## Phase 1 — Dataset preprocessing  (1–2 h)
 
 For each sudoku puzzle, run the solver and record **which solver step each cell
