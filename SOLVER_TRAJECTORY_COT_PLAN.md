@@ -377,20 +377,112 @@ loss_k = CE(action_k, trace[k].action) + CE(cell_k, trace[k].cell)
 - 5+ days to implement and debug.
 - High risk of failure: very different from baseline TRM training.
 
-## Recommended progression
+## C4 — Reverse-trace / diffusion-style supervision (recommended)
+
+Construct the trace by walking **backwards** from the GT solution, dropping
+one filled cell at a time until only clues remain. Reverse the sequence:
+the model is supervised on incrementally-filled-in states, like a denoising
+diffusion model.
+
+```python
+def construct_recall_trace(puzzle_clues, gt):
+    state = gt.copy()                    # solved state
+    trace = [state.copy()]
+    while state != puzzle_clues:
+        cell = random_choice(non_clue_cells_filled_in_state)
+        state[cell] = unfilled
+        trace.append(state.copy())
+    return list(reversed(trace))         # forward: clues → ... → solution
+```
+
+### Hybrid with C1: deterministic-easy + random-hard ordering
+
+A pure random reverse-trace gives no semantic ordering — the model could
+just be learning "fill in K random cells per ACT step". To fix this, combine
+with C1's technique-based curriculum:
+
+```python
+def hybrid_trace(puzzle, gt, strong_solver):
+    techniques = strong_solver.run(puzzle)              # per-cell technique
+    cell_to_step = {}
+    
+    # Easy cells: deterministic ACT step from technique difficulty
+    EASY_TECH_TO_STEP = {
+        'clue': 0, 'naked_single': 1, 'hidden_single': 2,
+        'naked_pair': 3, 'hidden_pair': 4, 'naked_triple': 5,
+    }
+    for cell, tech in techniques.items():
+        if tech in EASY_TECH_TO_STEP:
+            cell_to_step[cell] = EASY_TECH_TO_STEP[tech]
+    
+    # Hard cells (backtrack-derived or solver-failed):
+    # randomly distribute across late ACT steps 6-16
+    hard_cells = [c for c in range(81) if c not in cell_to_step]
+    random.shuffle(hard_cells)                          # ← key change
+    n_hard = len(hard_cells)
+    n_late_steps = 16 - 6 + 1
+    bucket_size = max(1, math.ceil(n_hard / n_late_steps))
+    for i, cell in enumerate(hard_cells):
+        cell_to_step[cell] = 6 + i // bucket_size
+    
+    return cell_to_step                                 # 81 entries
+```
+
+### Variable-length normalization
+
+Different puzzles have different empty-cell counts (25–56). To make all
+puzzles use exactly 16 ACT steps, scale the trace position:
 
 ```
-1. Phase C1 (1 day)
-   - extend tmp_0413's sudoku_scorer.py with per-cell technique tracking
-   - train one run on cr_0506_solver_traj_cot_c1_smoke
+cell_to_step_normalized = ceil(position_in_trace * 16 / num_empty_cells)
+```
+
+This ensures every puzzle's trace fills [step 1, step 16] proportionally.
+
+### Pros vs C1 / C2 / C3
+
+| | C1 | C2 | C3 | **C4 (this)** |
+|---|---|---|---|---|
+| Every cell has a step | ✗ (backtrack all step 16) | n/a | partial | **✓** |
+| Semantic ordering | ✓ | n/a | ✓ (trace) | partial (easy cells fixed, hard cells random) |
+| Architecture change | none | none | yes | **none** |
+| Implementation cost | 1 day | done | 5+ days | **1–2 days** |
+| Per-epoch data augmentation | none | none | none | **✓ (random shuffle)** |
+| Loss-head compatibility | reuse Phase A | none | new heads | **reuse Phase A** |
+
+### Pros (C4 specific)
+
+- Every cell appears in the trace; no "step 16 dump" of backtrack cells.
+- Deterministic for easy cells (model learns rules cleanly), random for hard
+  cells (model learns to fill in arbitrary order — robust to ordering).
+- Different shuffle each epoch ⇒ implicit data augmentation.
+- Like diffusion: model learns to denoise increasingly-sparse states; this
+  is a well-established training paradigm.
+
+### Cons
+
+- Random ordering of hard cells provides *less* explicit reasoning structure
+  than C3's full trace prediction.
+- Two hyperparameters (shuffle seed, normalization). Less reproducible
+  than C1.
+
+## Recommended progression (revised)
+
+```
+1. Phase C4 (1–2 days)
+   - extend sudoku_scorer.py with per-cell technique tracking
+   - implement hybrid_trace (deterministic-easy + random-shuffled-hard)
+   - normalize trace length to 16 ACT steps
+   - train one run on cr_0506_solver_traj_cot_c4_smoke
    - compare to baseline + derive_ignore family
-   
-2. If C1 ≥ baseline: claim victory, write paper.
-   If C1 < baseline: try Phase C3 (per-step trace prediction).
-   In any case: C2 (wrong-subtree augmentation) is a cheap "stack-on" that
-   can be added orthogonally.
+
+2. If C4 ≥ baseline: claim victory.
+   If C4 < baseline:
+     - try C1 (deterministic only) to isolate whether random shuffle hurts
+     - try C3 (full trace) if a deeper change seems needed
+   - C2 (wrong-subtree augmentation) is a cheap orthogonal stack-on.
 ```
 
-Phase C1 unblocks immediately on the strongest available solver, requires no
-architectural changes, and is the lowest-effort way to test whether
-backtracking-aware curriculum helps.
+C4 is the recommended starting point because it (a) covers every cell,
+(b) keeps the same architecture, (c) provides natural data augmentation,
+and (d) is computationally identical to baseline training.
