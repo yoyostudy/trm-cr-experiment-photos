@@ -17,7 +17,11 @@ Working directory: `/local-scratch/localhome/zwa204/tmp_0506/TinyRecursiveModels
 
 - ✅ **Phase 1 script written** at `tmp_0506/TinyRecursiveModels/build_solver_trajectory.py`
 - ✅ **Sanity-tested on 100 puzzles** of sudoku-extreme test set
-- ⏸ Phases 2/3/4 pending GPU availability (current ablations finish ~17:00–19:00 today)
+- 🔁 **Decision: skip Phase A, go directly to Phase C** — naked+hidden-single solver
+  only solves 16% of puzzles, leaving 84% with `solver_step == -1`. This trains
+  the model on easy puzzles only. To learn hard reasoning we need a stronger
+  solver that traces backtracking. See "Phase C strategy" below.
+- ⏸ Phases 2/3/4 pending Phase C solver implementation
 
 ### Sanity-test findings (100 puzzles, sudoku-extreme test)
 
@@ -280,3 +284,113 @@ tmp_0506/TinyRecursiveModels/
   data/                                 # symlink to tmp_0429/data
   SOLVER_TRAJECTORY_COT_PLAN.md         # this doc
 ```
+
+---
+
+# Phase C strategy — Teach the model backtracking
+
+The naked+hidden-single solver is too weak to provide useful supervision for
+84% of puzzles. The point of CoT supervision is to teach the model **harder**
+reasoning, not just the rules it could pick up implicitly. So Phase C extends
+Phase 1 with a stronger solver that handles backtracking.
+
+There are three distinct ways to encode "backtracking" as supervision; we
+recommend **C1** as the most tractable.
+
+## C1 — Per-cell technique → ACT step (recommended)
+
+Use [`tmp_0413/utils/sudoku_scorer.py`](https://github.com/yoyostudy/trm-cr-experiment-photos/blob/main/SOLVER_TRAJECTORY_COT_PLAN.md)
+(naked single → hidden single → naked pair → hidden pair → naked triple →
+backtrack), but instrument it to record, **per cell**, the technique that
+first determined it. Then map technique → ACT step:
+
+| Technique | ACT step bucket |
+|---|---|
+| `clue` (given) | 0 |
+| `naked_single` | 1 |
+| `hidden_single` | 2 |
+| `naked_pair` | 3 |
+| `hidden_pair` | 4 |
+| `naked_triple` | 5 |
+| (reserved for X-wing / locked / etc. if added) | 6–15 |
+| `backtrack` (any depth) | 16 |
+
+**Loss head behaviour:** identical to Phase A's `SolverTrajectoryACTLossHead`
+in cumulative mode. ACT step `k` supervises cells with `technique_step ≤ k`.
+The "fallback at step 16" is now natural — backtracking-derived cells are
+exactly those that need the deepest reasoning, so they fall at the last ACT
+iteration.
+
+**Pros**
+- Same loss-head architecture as Phase A; minimal new code.
+- No `solver_step == -1` cells (backtracking always finishes).
+- ACT step 16 is the explicit "use backtracking" bucket → semantic clarity.
+- Same compute and training time as Phase A.
+
+**Cons**
+- Doesn't expose the *internal structure* of the backtracking trace; the
+  model only knows "some cells need backtracking", not how to do it.
+- Backtracking cells all share step 16 — no graduated curriculum within
+  search-required cells.
+
+**Cost.** 1 day (1–2 h to extend the scorer, then same as Phase A).
+
+## C2 — Wrong-subtree data augmentation (already explored)
+
+Already implemented as `exp_0414_bt_descendents` in the cr_0413 line. For each
+hard puzzle, find the canonical backtracking tree and generate examples of
+"states reached after a wrong guess, where the model must recognise it must
+backtrack". Train on `clue ∪ wrong_subtree_examples`.
+
+**Result so far:** `exp_0414_bt_descendents` reached 0.7222 vs baseline 0.7148
+— **+0.7 pp improvement, modest**.
+
+**Pros**
+- Already implemented (`tmp_0413/utils/sudoku_with_wrong_child.py`).
+- No architectural changes.
+
+**Cons**
+- Marginal (+0.7 pp).
+- Doesn't combine with Phase A/C1 supervision (it's a data approach, not a
+  loss approach — but we could in principle stack).
+
+## C3 — Explicit trace prediction (most ambitious)
+
+Each ACT step predicts one trace element: `(action, cell, value)` where
+`action ∈ {guess, propagate, contradict, undo}`. The supervision target at
+step `k` is the `k`-th element of the canonical backtracking trace.
+
+```
+target_k = trace[k]   # e.g. ("guess", cell=27, value=4)
+loss_k = CE(action_k, trace[k].action) + CE(cell_k, trace[k].cell)
+       + CE(value_k, trace[k].value)
+```
+
+**Pros**
+- Most LLM-CoT-like. Model truly learns reasoning trajectory.
+- Explicit "undo" supervision — model sees the failed branches.
+
+**Cons**
+- Variable trace length (5 → 1000+ steps). Need to compress to
+  `halt_max_steps = 16` somehow.
+- Requires architecture changes (new prediction heads for action / cell / value).
+- 5+ days to implement and debug.
+- High risk of failure: very different from baseline TRM training.
+
+## Recommended progression
+
+```
+1. Phase C1 (1 day)
+   - extend tmp_0413's sudoku_scorer.py with per-cell technique tracking
+   - train one run on cr_0506_solver_traj_cot_c1_smoke
+   - compare to baseline + derive_ignore family
+   
+2. If C1 ≥ baseline: claim victory, write paper.
+   If C1 < baseline: try Phase C3 (per-step trace prediction).
+   In any case: C2 (wrong-subtree augmentation) is a cheap "stack-on" that
+   can be added orthogonally.
+```
+
+Phase C1 unblocks immediately on the strongest available solver, requires no
+architectural changes, and is the lowest-effort way to test whether
+backtracking-aware curriculum helps.
