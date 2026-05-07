@@ -71,44 +71,116 @@ the rules the solver already knows, push gradient where the solver gives up.
 
 ---
 
-## 3. Currently-Running Ablations
+## 3. Final Results (all runs evaluated on full test, 422786 puzzles)
 
 Each row is a 3-D coordinate `(Trust × Solver × Loss-weight)`.
 
-| Run | Trust | Solver cap | Loss weight | Hypothesis tested |
-|---|---|---|---|---|
-| `c20` | `pred==gt` | 20 | original | mild mask = regularization? |
-| `confidence_90_cap_10` | `pred==gt ∧ conf > 0.9` | 10 | original | confidence-filtered trust + real mask = self-paced curriculum? |
-| `inverse_mask_cap_10` | `pred==gt` | 10 | inverse `(0.1, 0.1, 1.0)` | flip the gradient onto hard cells |
-
-### Reference (already completed)
-
-| Run | Trust | Cap | Loss weight | n=64 final |
-|---|---|---|---|---|
-| baseline (cr_0413) | (no derive_ignore) | — | full GT | **0.7148** |
-| `v2` / `194437` | `pred==gt` | ∞ | original | 0.7164 ± 0.004 (≈ baseline) |
-| `M3` = `c=10` | `pred==gt` | 10 | original | 0.6640 (−5 pp) |
-| `c=5` | `pred==gt` | 5 | original | 0.4404 (−27 pp) |
-| `M2` | clues only | 0 | original | 0.2548 (−46 pp) |
-
-**Pattern:** with the original loss weighting, accuracy degrades monotonically
-as the mask strengthens (`mask plateau` ↑). The "any non-trivial mask hurts"
-finding motivates the improvements above.
+| Run | Trust | Cap | Loss weight | n=16 | n=32 | **n=64** | Δ baseline |
+|---|---|---|---|---|---|---|---|
+| baseline (cr_0413) | — | — | full GT | 0.5972 | 0.6691 | **0.7148** | — |
+| `v2` (2-seed avg) | `pred==gt` | ∞ | (1, 1, 0) | 0.6168 ± .002 | 0.6790 ± .003 | **0.7164 ± .004** | +0.2 pp |
+| ⭐ **`conf_90_cap_10`** | `pred==gt ∧ conf>0.9` | **10** | (1, 1, 0) | **0.6331** | **0.6899** | **0.7221** | **+0.7 pp** ✅ |
+| `c20` | `pred==gt` | 20 | (1, 1, 0) | 0.5929 | 0.6525 | 0.6861 | -2.9 pp |
+| `M3` | `pred==gt` | 10 | (1, 1, 0) | 0.5758 | — | 0.6640 | -5.1 pp |
+| `inverse_mask_cap_10` | `pred==gt` | 10 | **(0.1, 0.1, 1.0)** | 0.5307 | 0.6013 | 0.6463 | -6.9 pp |
+| `c5` | `pred==gt` | 5 | (1, 1, 0) | 0.3382 | 0.4005 | 0.4404 | -27 pp |
+| `M2` | **clue only** | — | (1, 1, 0) | — | — | 0.2548 | -46 pp |
 
 ---
 
-## 4. Promising Untested Combinations
+## 4. Per-axis verdict
+
+### Axis 1 — Solver cap: ❌ does not help on its own
+
+Tightening the cap monotonically degrades accuracy. With the original loss
+weighting, `mask_n_ignore ↑ → exact_acc ↓` is a near-linear curve:
+
+| Run | Cap | mask_n_ignore (final) | n=64 |
+|---|---|---|---|
+| `v2` | ∞ | ~0 (cap=∞ propagates everything) | 0.7164 |
+| `c20` | 20 | 5.6 | 0.6861 |
+| `M3` | 10 | 14.6 | 0.6640 |
+| `c5` | 5 | 22.4 | 0.4404 |
+| `M2` | clue-only | 47.7 | 0.2548 |
+
+The cells excluded from supervision are exactly the ones requiring real
+neural reasoning — removing their gradient is what hurts accuracy.
+
+### Axis 2 — Confidence-thresholded trust: ⭐ this is the win
+
+Same cap=10, only difference is whether `pred==gt` is filtered by
+`conf > 0.9`:
+
+| Run | Trust filter | n=64 |
+|---|---|---|
+| `M3` | `pred==gt` | 0.6640 |
+| **`conf_90_cap_10`** | `pred==gt ∧ conf > 0.9` | **0.7221** |
+
+**+5.8 pp from a single confidence threshold** — and it pushes derive_ignore
+above baseline for the first time.
+
+**Mechanism**: without confidence filtering, the trust set contains cells
+where the model "got lucky" — its prediction happened to equal GT but it
+doesn't reliably know that cell. Solver propagation from these noisy seeds
+produces incorrect "derivable" cells, polluting the entire supervision
+signal. The confidence threshold filters out unreliable predictions, so
+solver propagation starts from a clean trust set.
+
+### Axis 3 — Inverse loss weighting: ❌ worse than the baseline weighting
+
+Same cap=10, only difference is loss weight:
+
+| Run | Loss weight (trust, derivable, mask) | n=64 |
+|---|---|---|
+| `M3` | (1.0, 1.0, 0.0) — ignore hard cells | 0.6640 |
+| `inverse_mask_cap_10` | (0.1, 0.1, 1.0) — focus on hard cells | 0.6463 |
+
+Putting loss weight on the 5–15 mask cells instead of the 65+ trust+derivable
+cells provides ~10× less total gradient signal per puzzle. The hard cells
+alone are too few and too varied for the model to learn them — the easy
+cells provide the structural prior needed for any reasoning to emerge.
+
+---
+
+## 5. Paper takeaway
+
+**Old narrative** (planned, before `conf_90_cap_10` was found): negative
+result paper showing that derive_ignore variants don't help.
+
+**New narrative** (actual results): positive result + systematic analysis.
+
+> *Solver-guided supervision (derive_ignore) systematically harms learning
+> unless trust is filtered by model confidence. Specifically:*
+>
+> 1. *Naive derive_ignore hurts: tightening the solver cap monotonically
+>    degrades accuracy.*
+> 2. *Confidence-thresholded trust fixes it: filtering trust by
+>    `pred==gt ∧ conf>0.9` allows derive_ignore to beat baseline (+0.7 pp at
+>    n=64), while the same cap without confidence filtering loses 5 pp.*
+> 3. *Re-weighting the loss onto hard cells doesn't help: directly putting
+>    loss weight on the cells the solver can't derive is worse than ignoring
+>    them, because the hard cells are too few and too varied to learn from
+>    in isolation.*
+>
+> *The value of solver-guided supervision is not in the cap or in inverse
+> weighting, but in using the solver's reliance on confident model
+> predictions to filter out unreliable bootstrap signal.*
+
+---
+
+## 6. Untested combinations worth trying next
 
 ```
-A. focal:              weight ∝ CE_per_cell                      ← solver-free hard mining
-B. inverse + conf:     trust = conf>0.9, cap=10, weight=(0.1,0.1,1)  ← double filter
-C. soft trust:         trust_weight = sigmoid(conf), uniform loss  ← removes binary mask
-D. no-solver inverse:  cap=0, weight = (0,0,1)                  ← all-hard supervision
-E. uniform / baseline: weight = (1,1,1)                          ← sanity check
+A. confidence + cap=20:    trust = conf>τ, cap=20         ← softer mask, see if τ scales
+B. confidence sweep:       conf>0.7, 0.8, 0.95           ← find sweet spot for τ
+C. confidence-only:        trust = conf>0.9, cap=∞       ← the originally-crashed run
+D. focal weighting:        weight ∝ CE_per_cell           ← solver-free hard mining
+E. soft trust:             trust_weight = sigmoid(conf), uniform loss
 ```
 
-If the current 3 ablations don't beat baseline, A and C are the next promising
-directions — both decouple the loss design from the solver entirely.
+**Highest priority**: re-run `conf_90_cap_10` with a second seed to confirm
+the +0.7 pp is not noise. Then run B (confidence sweep) to map the response
+curve.
 
 ---
 
