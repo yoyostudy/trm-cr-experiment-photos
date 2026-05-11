@@ -79,7 +79,9 @@ Each row is a 3-D coordinate `(Trust × Solver × Loss-weight)`.
 |---|---|---|---|---|---|---|---|
 | baseline (cr_0413) | — | — | full GT | 0.5972 | 0.6691 | **0.7148** | — |
 | `v2` (2-seed avg) | `pred==gt` | ∞ | (1, 1, 0) | 0.6168 ± .002 | 0.6790 ± .003 | **0.7164 ± .004** | +0.2 pp |
-| ⭐ **`conf_90_cap_10`** | `pred==gt ∧ conf>0.9` | **10** | (1, 1, 0) | **0.6331** | **0.6899** | **0.7221** | **+0.7 pp** ✅ |
+| ⭐ **`conf_90_cap_10`** (2-seed avg) | `pred==gt ∧ conf>0.9` | **10** | (1, 1, 0) | **0.6364 ± .005** | **0.6942 ± .005** | **0.7279 ± .004** | **+1.31 pp** ✅ |
+| &nbsp;&nbsp;↳ seed=0 | … | … | … | 0.6396 | 0.6975 | 0.7307 | +1.59 pp |
+| &nbsp;&nbsp;↳ seed=1 | … | … | … | 0.6331 | 0.6909 | 0.7250 | +1.02 pp |
 | `c20` | `pred==gt` | 20 | (1, 1, 0) | 0.5929 | 0.6525 | 0.6861 | -2.9 pp |
 | `M3` | `pred==gt` | 10 | (1, 1, 0) | 0.5758 | — | 0.6640 | -5.1 pp |
 | `inverse_mask_cap_10` | `pred==gt` | 10 | **(0.1, 0.1, 1.0)** | 0.5307 | 0.6013 | 0.6463 | -6.9 pp |
@@ -114,10 +116,11 @@ Same cap=10, only difference is whether `pred==gt` is filtered by
 | Run | Trust filter | n=64 |
 |---|---|---|
 | `M3` | `pred==gt` | 0.6640 |
-| **`conf_90_cap_10`** | `pred==gt ∧ conf > 0.9` | **0.7221** |
+| **`conf_90_cap_10`** (2-seed) | `pred==gt ∧ conf > 0.9` | **0.7279 ± 0.004** |
 
-**+5.8 pp from a single confidence threshold** — and it pushes derive_ignore
-above baseline for the first time.
+**+6.4 pp from a single confidence threshold** — and it pushes derive_ignore
+above baseline for the first time. Reproduced across 2 seeds (n=64 = 0.7307
+and 0.7250), confirming this is not a lucky-seed artifact.
 
 **Mechanism**: without confidence filtering, the trust set contains cells
 where the model "got lucky" — its prediction happened to equal GT but it
@@ -155,8 +158,10 @@ result paper showing that derive_ignore variants don't help.
 > 1. *Naive derive_ignore hurts: tightening the solver cap monotonically
 >    degrades accuracy.*
 > 2. *Confidence-thresholded trust fixes it: filtering trust by
->    `pred==gt ∧ conf>0.9` allows derive_ignore to beat baseline (+0.7 pp at
->    n=64), while the same cap without confidence filtering loses 5 pp.*
+>    `pred==gt ∧ conf>0.9` allows derive_ignore to beat baseline (+1.31 pp at
+>    n=64, 2-seed avg), while the same cap without confidence filtering loses
+>    5 pp. The improvement is reproduced across 2 seeds (0.7307 and 0.7250),
+>    confirming it is not a lucky-seed artifact.*
 > 3. *Re-weighting the loss onto hard cells doesn't help: directly putting
 >    loss weight on the cells the solver can't derive is worse than ignoring
 >    them, because the hard cells are too few and too varied to learn from
@@ -178,9 +183,12 @@ D. focal weighting:        weight ∝ CE_per_cell           ← solver-free hard
 E. soft trust:             trust_weight = sigmoid(conf), uniform loss
 ```
 
-**Highest priority**: re-run `conf_90_cap_10` with a second seed to confirm
-the +0.7 pp is not noise. Then run B (confidence sweep) to map the response
-curve.
+**Done**: 2-seed reproduction of `conf_90_cap_10` confirmed real signal
+(seeds 0 and 1: 0.7307 and 0.7250, both above baseline 0.7148).
+
+**Next highest priority**: run B (confidence sweep on τ ∈ {0.7, 0.8, 0.95})
+to map the response curve and find the optimal threshold. Then C (cap=∞
+with confidence filter) to isolate the contribution of the cap.
 
 ---
 
