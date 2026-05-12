@@ -386,3 +386,19 @@ stages:
 ",1,2,16,0.722150,0.677068,0.607816,0.734369,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/exp_0414_bt_descendents_015622_stage2/training_dynamics/train_exact_accuracy.png
 cr_0429_derive_ignore (2-seed avg),,1,2,16,0.7164 ± 0.0041,0.6790 ± 0.0030,0.6168 ± 0.0018,0.9042 ± 0.0122,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_2seeds_combined/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_2seeds_combined/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_2seeds_combined/training_dynamics/exact_acc_at_halt_or_nsup64.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_2seeds_combined/training_dynamics/train_exact_accuracy.png
 cr_0429_derive_ignore_m3_194001,,1,2,16,0.664019,0.631632,0.575769,0.506661,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_m3_194001_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_m3_194001_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_m3_194001_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_m3_194001_stage0/training_dynamics/train_exact_accuracy.png
+cr_0511_B_mid_l1.5_214341,"name: cr_0511_B_mid_l1.5
+step_soft_cap: true
+step_cap_lambda_min: 1.5
+step_cap_lambda_max: 5.0
+step_cap_schedule: linear
+data_path_test: smoke_data/sudoku-smoke-test
+depth:
+  H_cycles: 1
+  L_cycles: 2
+  L_layers: 2
+stages:
+- data_path: data/sudoku-extreme-1k-aug-1000
+  nsup: 16
+  num_epochs: 50000
+  batch_size: 768
+  eval_interval: 1000",1,2,16,0.711261,0.667752,0.598168,0.562787,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0511_B_mid_l1.5_214341_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0511_B_mid_l1.5_214341_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png,https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0511_B_mid_l1.5_214341_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png,
