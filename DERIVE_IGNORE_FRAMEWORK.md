@@ -79,13 +79,17 @@ Each row is a 3-D coordinate `(Trust × Solver × Loss-weight)`.
 |---|---|---|---|---|---|---|---|
 | baseline (cr_0413) | — | — | full GT | 0.5972 | 0.6691 | **0.7148** | — |
 | `v2` (2-seed avg) | `pred==gt` | ∞ | (1, 1, 0) | 0.6168 ± .002 | 0.6790 ± .003 | **0.7164 ± .004** | +0.2 pp |
-| **τ=0.99** (new) | `pred==gt ∧ conf>0.99` | 10 | (1, 1, 0) | **0.6489** | **0.7031** | **0.7355** ⭐⭐ | **+2.07 pp** ✅ |
-| **τ=0.95** (new) | `pred==gt ∧ conf>0.95` | 10 | (1, 1, 0) | 0.6455 | 0.7007 | **0.7321** | +1.73 pp ✅ |
-| ⭐ **τ=0.90 `conf_90_cap_10`** (2-seed) | `pred==gt ∧ conf>0.9` | 10 | (1, 1, 0) | 0.6364 ± .005 | 0.6942 ± .005 | **0.7279 ± .004** | +1.31 pp ✅ |
+| **τ=0.99 + cap=10** | `pred==gt ∧ conf>0.99` | 10 | (1, 1, 0) | **0.6489** | **0.7031** | **0.7355** ⭐⭐ | **+2.07 pp** ✅ |
+| **τ=0.99 + cap=15** | `pred==gt ∧ conf>0.99` | 15 | (1, 1, 0) | TBD | TBD | **0.6933** (final) | -2.15 pp ⚠️ |
+| &nbsp;&nbsp;↳ peak (step 48174) | … | … | … | — | — | 0.7077 | -0.71 pp |
+| **τ=0.99 + cap=20** | `pred==gt ∧ conf>0.99` | 20 | (1, 1, 0) | TBD | TBD | **0.0176** 💀 collapse | catastrophic |
+| &nbsp;&nbsp;↳ **peak (step 39060)** | … | … | … | — | — | **0.7431** ⭐⭐⭐ best ever | **+2.83 pp** at peak |
+| **τ=0.95 + cap=10** | `pred==gt ∧ conf>0.95` | 10 | (1, 1, 0) | 0.6455 | 0.7007 | **0.7321** | +1.73 pp ✅ |
+| ⭐ **τ=0.90 + cap=10 `conf_90_cap_10`** (2-seed) | `pred==gt ∧ conf>0.9` | 10 | (1, 1, 0) | 0.6364 ± .005 | 0.6942 ± .005 | **0.7279 ± .004** | +1.31 pp ✅ |
 | &nbsp;&nbsp;↳ seed=0 | … | … | … | 0.6396 | 0.6975 | 0.7307 | +1.59 pp |
 | &nbsp;&nbsp;↳ seed=1 | … | … | … | 0.6331 | 0.6909 | 0.7250 | +1.02 pp |
-| **τ=0.70** (new) | `pred==gt ∧ conf>0.7` | 10 | (1, 1, 0) | 0.6453 | 0.6980 | **0.7289** | +1.41 pp ✅ |
-| **τ=0.80** (new) | `pred==gt ∧ conf>0.8` | 10 | (1, 1, 0) | 0.6186 | 0.6785 | **0.7139** | -0.09 pp ⚠️ outlier |
+| **τ=0.70 + cap=10** | `pred==gt ∧ conf>0.7` | 10 | (1, 1, 0) | 0.6453 | 0.6980 | **0.7289** | +1.41 pp ✅ |
+| **τ=0.80 + cap=10** | `pred==gt ∧ conf>0.8` | 10 | (1, 1, 0) | 0.6186 | 0.6785 | **0.7139** | -0.09 pp ⚠️ outlier |
 | `c20` | `pred==gt` | 20 | (1, 1, 0) | 0.5929 | 0.6525 | 0.6861 | -2.9 pp |
 | `M3` | `pred==gt` | 10 | (1, 1, 0) | 0.5758 | — | 0.6640 | -5.1 pp |
 | `inverse_mask_cap_10` | `pred==gt` | 10 | **(0.1, 0.1, 1.0)** | 0.5307 | 0.6013 | 0.6463 | -6.9 pp |
@@ -96,10 +100,10 @@ Each row is a 3-D coordinate `(Trust × Solver × Loss-weight)`.
 
 ## 4. Per-axis verdict
 
-### Axis 1 — Solver cap: ❌ does not help on its own
+### Axis 1 — Solver cap: ❌ does not help on its own (and large cap is unstable with τ filter!)
 
-Tightening the cap monotonically degrades accuracy. With the original loss
-weighting, `mask_n_ignore ↑ → exact_acc ↓` is a near-linear curve:
+**Without confidence filter** (τ=0): tightening the cap monotonically degrades
+accuracy. `mask_n_ignore ↑ → exact_acc ↓` is a near-linear curve:
 
 | Run | Cap | mask_n_ignore (final) | n=64 |
 |---|---|---|---|
@@ -109,8 +113,27 @@ weighting, `mask_n_ignore ↑ → exact_acc ↓` is a near-linear curve:
 | `c5` | 5 | 22.4 | 0.4404 |
 | `M2` | clue-only | 47.7 | 0.2548 |
 
-The cells excluded from supervision are exactly the ones requiring real
-neural reasoning — removing their gradient is what hurts accuracy.
+**With confidence filter** (τ=0.99): the relationship is **non-monotonic**!
+Larger cap → fewer ignore cells → but training becomes unstable:
+
+| Cap | mask_n_ignore (est.) | n=64 peak | n=64 final | Stability |
+|---|---|---|---|---|
+| **10** | ~15 (19%) | 0.7355 | **0.7355** | ✅ stable |
+| 15 | ~9 (11%) | 0.7077 (step 48174) | 0.6933 | ✅ stable, but lower |
+| **20** | ~6 (7%) | **0.7431** (step 39060) ⭐ best ever | **0.0176** | 💀 **collapses** |
+
+**Key finding (counter-intuitive)**: At τ=0.99, **cap=20 achieves the highest
+peak ever observed (0.7431, +2.83 pp over baseline) at step 39060**, but then
+training catastrophically collapses to ~random by step 65100. cap=10 has
+*more* ignore cells (19%) but is the only stable setting. The hypothesis
+that "fewer ignore cells = better" is wrong: cap=10's mask plays a stabilizing
+role even though it removes 19% of supervision.
+
+Plausible cause of cap=20 collapse: with the very strict trust filter
+(τ=0.99) the trust set is small and noisy; allowing the solver to propagate
+deeper (cap=20) lets early errors snowball into incorrectly-labeled
+"derivable" cells. The model trains on these wrong labels, drifts, and never
+recovers. cap=10's tighter solver acts as a circuit breaker.
 
 ### Axis 2 — Confidence-thresholded trust: ⭐ this is the win
 
