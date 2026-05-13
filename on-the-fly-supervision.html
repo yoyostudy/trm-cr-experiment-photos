@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>On-the-fly Supervision — All Runs</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 100%; margin: 20px; }
+  h1 { color: #333; }
+  .intro { background: #f5f5f5; padding: 16px; border-radius: 8px; margin-bottom: 20px; }
+  table { border-collapse: collapse; width: 100%; }
+  th { background: #4472C4; color: white; padding: 12px 8px; text-align: left; font-weight: bold; position: sticky; top: 0; z-index: 10; }
+  td { border: 1px solid #ddd; padding: 12px 8px; vertical-align: middle; }
+  td img { display: block; max-width: 100%; height: auto; }
+  tr:hover { background: #f9f9f9; }
+  a { color: #0563C1; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .small { font-size: 12px; color: #666; }
+  .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>On-the-Fly Supervision — All Runs</h1>
+
+<div class="intro">
+<p><b>15 derive_ignore experiments</b> on sudoku-extreme. Sorted by hard.exact_acc at peak (n=64).</p>
+<p>Metric: <code>exact_acc @ halt_or_max</code> on full test (422786 puzzles).</p>
+<ul>
+  <li><b>baseline</b> reference: n=64 = 0.7148, hard = 0.6057</li>
+  <li><b>Sweet spot (stable)</b>: τ=0.99 + cap=10 → n=64 = 0.7355, hard = 0.6300 (+2.07 pp / +2.43 pp on hard)</li>
+  <li><b>Unstable peak</b>: τ=0.99 + cap=20 → peak n=64 = 0.7431 then collapses to 0.0176</li>
+</ul>
+<p>See <a href="DERIVE_IGNORE_FRAMEWORK.md">DERIVE_IGNORE_FRAMEWORK.md</a> for design framework and
+<a href="ON_THE_FLY_SUPERVISION.md">ON_THE_FLY_SUPERVISION.md</a> for full analysis.</p>
+</div>
+
+<table>
+<thead>
+<tr>
+  <th>Run / Config</th>
+  <th>peak n=64 (all)</th>
+  <th>peak n=64 (hard)</th>
+  <th>nsup=16 training</th>
+  <th>nsup=32 training</th>
+  <th>nsup=64 training</th>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+  <td><b>conf=0.99 cap=20</b> ⚠️ peak then collapse<br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0429_derive_ignore_confidence_99_cap_20_smoke_160041">cr_0429_derive_ignore_confidence_99_cap_20_smoke_1...</a></small><br/>
+      <small style="color:#666">trust: pred==gt ∧ conf>0.99 &nbsp;|&nbsp; cap: 20 &nbsp;|&nbsp; weight: (1, 1, 0)</small><br/>
+      <small style="color:#666">peak step: 39060 &nbsp;|&nbsp; final step: 65100</small>
+  </td>
+  <td style="background:rgb(218,255,218); text-align:center; font-size:14px">
+    <b>0.7431</b><br/>
+    <small>Δ +2.83pp</small>
+  </td>
+  <td style="background:rgb(208,255,208); text-align:center; font-size:14px">
+    <b>0.6423</b><br/>
+    <small>Δ +3.66pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_99_cap_20_smoke_160041_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_99_cap_20_smoke_160041_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_99_cap_20_smoke_160041_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+
+<tr>
+  <td><b>conf=0.95 cap=10</b><br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0429_derive_ignore_confidence_95_cap_10_smoke_103803">cr_0429_derive_ignore_confidence_95_cap_10_smoke_1...</a></small><br/>
+      <small style="color:#666">trust: pred==gt ∧ conf>0.95 &nbsp;|&nbsp; cap: 10 &nbsp;|&nbsp; weight: (1, 1, 0)</small><br/>
+      <small style="color:#666">peak step: 61194 &nbsp;|&nbsp; final step: 65100</small>
+  </td>
+  <td style="background:rgb(231,255,231); text-align:center; font-size:14px">
+    <b>0.7330</b><br/>
+    <small>Δ +1.82pp</small>
+  </td>
+  <td style="background:rgb(220,255,220); text-align:center; font-size:14px">
+    <b>0.6326</b><br/>
+    <small>Δ +2.69pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_95_cap_10_smoke_103803_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_95_cap_10_smoke_103803_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_95_cap_10_smoke_103803_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+
+<tr>
+  <td><b>conf=0.99 cap=10</b> ⭐ stable best<br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0429_derive_ignore_confidence_99_cap_10_smoke_103803">cr_0429_derive_ignore_confidence_99_cap_10_smoke_1...</a></small><br/>
+      <small style="color:#666">trust: pred==gt ∧ conf>0.99 &nbsp;|&nbsp; cap: 10 &nbsp;|&nbsp; weight: (1, 1, 0)</small><br/>
+      <small style="color:#666">peak step: 65100 &nbsp;|&nbsp; final step: 65100</small>
+  </td>
+  <td style="background:rgb(228,255,228); text-align:center; font-size:14px">
+    <b>0.7355</b><br/>
+    <small>Δ +2.07pp</small>
+  </td>
+  <td style="background:rgb(224,255,224); text-align:center; font-size:14px">
+    <b>0.6300</b><br/>
+    <small>Δ +2.43pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_99_cap_10_smoke_103803_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_99_cap_10_smoke_103803_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_99_cap_10_smoke_103803_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+
+<tr>
+  <td><b>conf=0.90 cap=10 seed=0</b><br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0429_derive_ignore_confidence_90_cap_10_smoke_130616">cr_0429_derive_ignore_confidence_90_cap_10_smoke_1...</a></small><br/>
+      <small style="color:#666">trust: pred==gt ∧ conf>0.90 &nbsp;|&nbsp; cap: 10 &nbsp;|&nbsp; weight: (1, 1, 0)</small><br/>
+      <small style="color:#666">peak step: 63798 &nbsp;|&nbsp; final step: 65100</small>
+  </td>
+  <td style="background:rgb(231,255,231); text-align:center; font-size:14px">
+    <b>0.7336</b><br/>
+    <small>Δ +1.88pp</small>
+  </td>
+  <td style="background:rgb(228,255,228); text-align:center; font-size:14px">
+    <b>0.6265</b><br/>
+    <small>Δ +2.08pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_90_cap_10_smoke_130616_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_90_cap_10_smoke_130616_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_90_cap_10_smoke_130616_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+
+<tr>
+  <td><b>conf=0.70 cap=10</b><br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0429_derive_ignore_confidence_70_cap_10_smoke_103803">cr_0429_derive_ignore_confidence_70_cap_10_smoke_1...</a></small><br/>
+      <small style="color:#666">trust: pred==gt ∧ conf>0.70 &nbsp;|&nbsp; cap: 10 &nbsp;|&nbsp; weight: (1, 1, 0)</small><br/>
+      <small style="color:#666">peak step: 65100 &nbsp;|&nbsp; final step: 65100</small>
+  </td>
+  <td style="background:rgb(237,255,237); text-align:center; font-size:14px">
+    <b>0.7289</b><br/>
+    <small>Δ +1.41pp</small>
+  </td>
+  <td style="background:rgb(232,255,232); text-align:center; font-size:14px">
+    <b>0.6234</b><br/>
+    <small>Δ +1.77pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_70_cap_10_smoke_103803_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_70_cap_10_smoke_103803_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_70_cap_10_smoke_103803_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+
+<tr>
+  <td><b>conf=0.90 cap=10 seed=1</b><br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0429_derive_ignore_confidence_90_cap_10_smoke_seed1_155423">cr_0429_derive_ignore_confidence_90_cap_10_smoke_s...</a></small><br/>
+      <small style="color:#666">trust: pred==gt ∧ conf>0.90 &nbsp;|&nbsp; cap: 10 &nbsp;|&nbsp; weight: (1, 1, 0)</small><br/>
+      <small style="color:#666">peak step: 65100 &nbsp;|&nbsp; final step: 65100</small>
+  </td>
+  <td style="background:rgb(241,255,241); text-align:center; font-size:14px">
+    <b>0.7250</b><br/>
+    <small>Δ +1.02pp</small>
+  </td>
+  <td style="background:rgb(247,255,247); text-align:center; font-size:14px">
+    <b>0.6114</b><br/>
+    <small>Δ +0.57pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_90_cap_10_smoke_seed1_155423_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_90_cap_10_smoke_seed1_155423_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_90_cap_10_smoke_seed1_155423_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+
+<tr>
+  <td><b>v2 (cap=∞, no filter)</b><br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0429_derive_ignore_194437">cr_0429_derive_ignore_194437...</a></small><br/>
+      <small style="color:#666">trust: pred==gt &nbsp;|&nbsp; cap: ∞ &nbsp;|&nbsp; weight: (1, 1, 0)</small><br/>
+      <small style="color:#666">peak step: 49476 &nbsp;|&nbsp; final step: 65100</small>
+  </td>
+  <td style="background:rgb(249,255,249); text-align:center; font-size:14px">
+    <b>0.7193</b><br/>
+    <small>Δ +0.45pp</small>
+  </td>
+  <td style="background:rgb(254,255,254); text-align:center; font-size:14px">
+    <b>0.6060</b><br/>
+    <small>Δ +0.03pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_194437_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_194437_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_194437_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+
+<tr>
+  <td><b>baseline</b><br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0413_baseline_220918">cr_0413_baseline_220918...</a></small><br/>
+      <small style="color:#666">trust: — &nbsp;|&nbsp; cap: — &nbsp;|&nbsp; weight: full GT</small><br/>
+      <small style="color:#666">peak step: 55986 &nbsp;|&nbsp; final step: 65100</small>
+  </td>
+  <td style="background:rgb(255,255,255); text-align:center; font-size:14px">
+    <b>0.7148</b><br/>
+    <small>Δ +0.00pp</small>
+  </td>
+  <td style="background:rgb(255,255,255); text-align:center; font-size:14px">
+    <b>0.6057</b><br/>
+    <small>Δ +0.00pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0413_baseline_220918_stage2/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+
+<tr>
+  <td><b>conf=0.80 cap=10</b><br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0429_derive_ignore_confidence_80_cap_10_smoke_103803">cr_0429_derive_ignore_confidence_80_cap_10_smoke_1...</a></small><br/>
+      <small style="color:#666">trust: pred==gt ∧ conf>0.80 &nbsp;|&nbsp; cap: 10 &nbsp;|&nbsp; weight: (1, 1, 0)</small><br/>
+      <small style="color:#666">peak step: 65100 &nbsp;|&nbsp; final step: 65100</small>
+  </td>
+  <td style="background:rgb(255,253,253); text-align:center; font-size:14px">
+    <b>0.7139</b><br/>
+    <small>Δ -0.09pp</small>
+  </td>
+  <td style="background:rgb(255,246,246); text-align:center; font-size:14px">
+    <b>0.5988</b><br/>
+    <small>Δ -0.69pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_80_cap_10_smoke_103803_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_80_cap_10_smoke_103803_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_80_cap_10_smoke_103803_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+
+<tr>
+  <td><b>conf=0.99 cap=15</b><br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0429_derive_ignore_confidence_99_cap_15_smoke_160041">cr_0429_derive_ignore_confidence_99_cap_15_smoke_1...</a></small><br/>
+      <small style="color:#666">trust: pred==gt ∧ conf>0.99 &nbsp;|&nbsp; cap: 15 &nbsp;|&nbsp; weight: (1, 1, 0)</small><br/>
+      <small style="color:#666">peak step: 48174 &nbsp;|&nbsp; final step: 65100</small>
+  </td>
+  <td style="background:rgb(255,245,245); text-align:center; font-size:14px">
+    <b>0.7077</b><br/>
+    <small>Δ -0.71pp</small>
+  </td>
+  <td style="background:rgb(255,241,241); text-align:center; font-size:14px">
+    <b>0.5954</b><br/>
+    <small>Δ -1.03pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_99_cap_15_smoke_160041_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_99_cap_15_smoke_160041_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_confidence_99_cap_15_smoke_160041_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+
+<tr>
+  <td><b>c20 (cap=20, no filter)</b><br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0429_derive_ignore_c20_smoke_115745">cr_0429_derive_ignore_c20_smoke_115745...</a></small><br/>
+      <small style="color:#666">trust: pred==gt &nbsp;|&nbsp; cap: 20 &nbsp;|&nbsp; weight: (1, 1, 0)</small><br/>
+      <small style="color:#666">peak step: 65100 &nbsp;|&nbsp; final step: 65100</small>
+  </td>
+  <td style="background:rgb(255,218,218); text-align:center; font-size:14px">
+    <b>0.6861</b><br/>
+    <small>Δ -2.87pp</small>
+  </td>
+  <td style="background:rgb(255,200,200); text-align:center; font-size:14px">
+    <b>0.5630</b><br/>
+    <small>Δ -4.27pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_c20_smoke_115745_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_c20_smoke_115745_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_c20_smoke_115745_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+
+<tr>
+  <td><b>M3 (cap=10, no filter)</b><br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0429_derive_ignore_m3_194001">cr_0429_derive_ignore_m3_194001...</a></small><br/>
+      <small style="color:#666">trust: pred==gt &nbsp;|&nbsp; cap: 10 &nbsp;|&nbsp; weight: (1, 1, 0)</small><br/>
+      <small style="color:#666">peak step: 63798 &nbsp;|&nbsp; final step: 63798</small>
+  </td>
+  <td style="background:rgb(255,190,190); text-align:center; font-size:14px">
+    <b>0.6640</b><br/>
+    <small>Δ -5.08pp</small>
+  </td>
+  <td style="background:rgb(255,152,152); text-align:center; font-size:14px">
+    <b>0.5252</b><br/>
+    <small>Δ -8.05pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_m3_194001_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_m3_194001_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_m3_194001_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+
+<tr>
+  <td><b>inverse_mask cap=10</b><br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0429_derive_ignore_inverse_mask_cap_10_smoke_131137">cr_0429_derive_ignore_inverse_mask_cap_10_smoke_13...</a></small><br/>
+      <small style="color:#666">trust: pred==gt &nbsp;|&nbsp; cap: 10 &nbsp;|&nbsp; weight: (0.1, 0.1, 1.0)</small><br/>
+      <small style="color:#666">peak step: 62496 &nbsp;|&nbsp; final step: 65100</small>
+  </td>
+  <td style="background:rgb(255,174,174); text-align:center; font-size:14px">
+    <b>0.6517</b><br/>
+    <small>Δ -6.31pp</small>
+  </td>
+  <td style="background:rgb(255,127,127); text-align:center; font-size:14px">
+    <b>0.5053</b><br/>
+    <small>Δ -10.04pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_inverse_mask_cap_10_smoke_131137_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_inverse_mask_cap_10_smoke_131137_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_inverse_mask_cap_10_smoke_131137_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+
+<tr>
+  <td><b>c5 (cap=5, no filter)</b><br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0429_derive_ignore_c5_162547">cr_0429_derive_ignore_c5_162547...</a></small><br/>
+      <small style="color:#666">trust: pred==gt &nbsp;|&nbsp; cap: 5 &nbsp;|&nbsp; weight: (1, 1, 0)</small><br/>
+      <small style="color:#666">peak step: 65100 &nbsp;|&nbsp; final step: 65100</small>
+  </td>
+  <td style="background:rgb(255,127,127); text-align:center; font-size:14px">
+    <b>0.4404</b><br/>
+    <small>Δ -27.44pp</small>
+  </td>
+  <td style="background:rgb(255,127,127); text-align:center; font-size:14px">
+    <b>0.2907</b><br/>
+    <small>Δ -31.50pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_c5_162547_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_c5_162547_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_c5_162547_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+
+<tr>
+  <td><b>M2 (clue only)</b><br/>
+      <small><a href="https://wandb.ai/sfu-tai-lab-zhe/TRM_CR/runs/cr_0429_derive_ignore_m2_204257">cr_0429_derive_ignore_m2_204257...</a></small><br/>
+      <small style="color:#666">trust: clue only &nbsp;|&nbsp; cap: — &nbsp;|&nbsp; weight: (1, 1, 0)</small><br/>
+      <small style="color:#666">peak step: 65100 &nbsp;|&nbsp; final step: 65100</small>
+  </td>
+  <td style="background:rgb(255,127,127); text-align:center; font-size:14px">
+    <b>0.2582</b><br/>
+    <small>Δ -45.66pp</small>
+  </td>
+  <td style="background:rgb(255,127,127); text-align:center; font-size:14px">
+    <b>0.0924</b><br/>
+    <small>Δ -51.33pp</small>
+  </td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_m2_204257_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_m2_204257_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:600px;"/></td>
+  <td><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_m2_204257_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:600px;"/></td>
+</tr>
+</tbody>
+</table>
+
+<div class="footer">
+<p>Click images to zoom (open in new tab). Click wandb_id to view run.<br/>
+Raw data: <a href="on-the-fly-supervision.csv">CSV</a> &nbsp;|&nbsp; <a href="on-the-fly-supervision.xlsx">Excel</a></p>
+</div>
+
+</body>
+</html>
