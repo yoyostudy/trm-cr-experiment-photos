@@ -3,13 +3,14 @@
 body { font-family: -apple-system, sans-serif; margin: 16px; }
 h1 { color: #333; }
 .intro { background: #f5f5f5; padding: 12px; border-radius: 8px; margin-bottom: 14px; font-size: 13px; line-height: 1.5; }
+.formulas { background: #eef4ff; padding: 12px 16px; border-radius: 8px; margin-bottom: 14px; font-size: 13px; }
 table.main { border-collapse: collapse; }
 table.main th { background: #4472C4; color: white; padding: 8px; text-align: center; font-size: 13px; }
 table.main td { border: 1px solid #ddd; padding: 6px; vertical-align: top; }
 table.main tr:hover { background: #f9f9f9; }
 a { color: #0563C1; }
 code { background:#eee; padding:1px 4px; border-radius:3px; }
-</style></head>
+</style><script>MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]}};</script><script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script></head>
 <body>
 
 <h1>Wrong-Cell Penalty</h1>
@@ -26,6 +27,26 @@ not the same step, so not a strict comparison.<br/>
 &bull; Lowering both thresholds to 0.90 (last row) hurts badly (&minus;13pp @ nsup64).<br/>
 <small>Metric: exact_acc_at_halt_or_max, FULL sudoku-extreme test set (422,786 puzzles).
 Cell colour = vs CLEAN baseline (green better, red worse). Sorted by hard@nsup64.</small>
+</div>
+
+<div class="formulas">
+<b>Formulas</b><br/>
+Total training objective:
+\[ \mathcal{L}_{\text{total}} \;=\; \mathcal{L}_{\text{CE-DI}} \;+\; \lambda\,\mathcal{L}_{\text{wc}}
+   \;+\; \tfrac{1}{2}\bigl(\mathcal{L}_{q\text{-halt}}+\mathcal{L}_{q\text{-cont}}\bigr) \]
+wcpenalty term, two forms &mdash; \(p\) = model softmax prob on its (wrong) predicted class,
+penalty averaged over the per-sample divisor \(D\):
+\[ \mathcal{L}_{\text{wc}}^{\text{neglogp}}=\frac{1}{D}\sum_{i}-\log(1-p_i)
+   \qquad
+   \mathcal{L}_{\text{wc}}^{\text{focal}}=\frac{1}{D}\sum_{i}p_i^{\gamma} \]
+The \(-\log(1-p)\) form has unbounded gradient as \(p\to1\). <b>Soft cap</b> bounds it:
+\[ \Phi(p)=C\,\tanh\!\Bigl(\tfrac{-\log(1-p)}{C}\Bigr),\qquad C=2 \]
+<b>Per-cell-fair normalization</b>: CE-DI and wcpenalty use the <i>same</i> divisor \(D\)
+(supervised-cell count for &divide;56, or all-81 for &divide;81), so each wrong cell is
+weighted exactly like each CE cell:
+\[ \mathcal{L}_{\text{CE-DI}}=\frac{1}{D}\sum_{i\in\text{sup}}\text{CE}_i
+   \qquad
+   \mathcal{L}_{\text{wc}}=\frac{1}{D}\sum_{i\in\text{wrong}}\Phi(p_i) \]
 </div>
 
 <table class="main"><thead>
