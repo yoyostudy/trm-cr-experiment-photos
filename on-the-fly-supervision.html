@@ -355,6 +355,7 @@ function setAll(show) {
 }
 </script>
 
+
 <!-- WRONG-CELL-PENALTY-SECTION -->
 <hr style="margin:32px 0; border:none; border-top:2px solid #ccc"/>
 <h1>Wrong-Cell Penalty</h1>
@@ -369,14 +370,24 @@ Result: V1 (&divide;56) and V2 (&divide;81) reach <b>0.742 / 0.735</b> all-exact
 <small>exact_acc_at_halt_or_max, FULL sudoku-extreme test set (422,786). Cell colour vs CLEAN baseline.
 Sorted by hard@nsup64.</small>
 </div>
-<div style="background:#eef4ff; padding:12px 16px; border-radius:8px; margin-bottom:14px; font-size:13px">
-<b>Formulas</b><br/>
-Total objective: \[ \mathcal{L}_{\text{total}}=\mathcal{L}_{\text{CE-DI}}+\lambda\,\mathcal{L}_{\text{wc}}+\tfrac12(\mathcal{L}_{q\text{-halt}}+\mathcal{L}_{q\text{-cont}}) \]
-wcpenalty, two forms (\(p\)=softmax prob on the wrong predicted class, divisor \(D\)):
-\[ \mathcal{L}_{\text{wc}}^{\text{neglogp}}=\frac1D\sum_i-\log(1-p_i) \qquad \mathcal{L}_{\text{wc}}^{\text{focal}}=\frac1D\sum_i p_i^{\gamma} \]
-Soft cap bounds the \(-\log(1-p)\) gradient: \[ \Phi(p)=C\,\tanh\!\bigl(\tfrac{-\log(1-p)}{C}\bigr),\quad C=2 \]
-Per-cell-fair: CE-DI and wcpenalty share the same divisor \(D\) so each wrong cell is weighted like each CE cell:
-\[ \mathcal{L}_{\text{CE-DI}}=\frac1D\!\!\sum_{i\in\text{sup}}\!\!\text{CE}_i \qquad \mathcal{L}_{\text{wc}}=\frac1D\!\!\sum_{i\in\text{wrong}}\!\!\Phi(p_i) \]
+<div style="background:#eef4ff; padding:14px 18px; border-radius:8px; margin-bottom:14px; font-size:13px">
+<b>Formulas</b>
+<div style="font-family:Georgia,'Times New Roman',serif; font-size:15px; line-height:2.4; margin:8px 0 0 14px">
+<b>Total objective</b> &nbsp; &#8466;<sub>total</sub> = &#8466;<sub>CE-DI</sub> + &lambda;&middot;&#8466;<sub>wc</sub> + &frac12;(&#8466;<sub>q-halt</sub> + &#8466;<sub>q-cont</sub>)<br/>
+<b>wcpenalty &mdash; neglogp</b> &nbsp; &#8466;<sub>wc</sub> = (1/D)&thinsp;&Sigma;<sub>i</sub> &minus;log(1&minus;p<sub>i</sub>)
+&nbsp;<span style="color:#666;font-family:sans-serif;font-size:12px">i over cells: pred &ne; label <b>and</b> p<sub>i</sub> &gt; &tau;<sub>wrong</sub></span><br/>
+<b>wcpenalty &mdash; focal</b> &nbsp; &#8466;<sub>wc</sub> = (1/D)&thinsp;&Sigma;<sub>i</sub> p<sub>i</sub><sup>&gamma;</sup>
+&nbsp;<span style="color:#666;font-family:sans-serif;font-size:12px">i over all wrong cells (no threshold)</span><br/>
+<b>soft cap</b> &nbsp; &Phi;(p) = C&middot;tanh( &minus;log(1&minus;p) / C ) , &nbsp; C = 2
+&nbsp;<span style="color:#666;font-family:sans-serif;font-size:12px">bounds the &minus;log(1&minus;p) gradient</span><br/>
+<b>per-cell-fair</b> &nbsp; &#8466;<sub>CE-DI</sub> = (1/D)&thinsp;&Sigma;<sub>i&isin;sup</sub> CE<sub>i</sub> ,
+&nbsp; &#8466;<sub>wc</sub> = (1/D)&thinsp;&Sigma;<sub>i&isin;wrong</sub> &Phi;(p<sub>i</sub>)
+&nbsp;<span style="color:#666;font-family:sans-serif;font-size:12px">same divisor D &rArr; each wrong cell weighted like each CE cell</span>
+</div>
+<div style="font-family:sans-serif;font-size:12px;color:#666;margin-top:8px">
+p = model softmax prob on its (wrong) predicted class &nbsp;|&nbsp; D = per-sample divisor &nbsp;|&nbsp;
+&lambda; = 0.15 &nbsp;|&nbsp; the 3 runs below use neglogp + soft cap.
+</div>
 </div>
 <table class="main"><thead>
 <tr><th rowspan="2">Run</th><th rowspan="2">peak metrics<br/>(full test set)</th>
@@ -403,6 +414,6 @@ Per-cell-fair: CE-DI and wcpenalty share the same divisor \(D\) so each wrong ce
 <td class="col-exact-16"><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_trust90_wcsoft2_divsup_lam015_aux00_smoke_094102_stage0/training_dynamics/exact_acc_at_halt_or_nsup16.png" style="width:100%; max-width:560px"></td><td class="col-exact-32"><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_trust90_wcsoft2_divsup_lam015_aux00_smoke_094102_stage0/training_dynamics/exact_acc_at_halt_or_nsup32.png" style="width:100%; max-width:560px"></td><td class="col-exact-64"><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_trust90_wcsoft2_divsup_lam015_aux00_smoke_094102_stage0/training_dynamics/exact_acc_at_halt_or_nsup64.png" style="width:100%; max-width:560px"></td><td class="col-cov-16"><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_trust90_wcsoft2_divsup_lam015_aux00_smoke_094102_stage0/training_dynamics/halt_coverage_nsup16.png" style="width:100%; max-width:560px"></td><td class="col-cov-32"><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_trust90_wcsoft2_divsup_lam015_aux00_smoke_094102_stage0/training_dynamics/halt_coverage_nsup32.png" style="width:100%; max-width:560px"></td><td class="col-cov-64"><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_trust90_wcsoft2_divsup_lam015_aux00_smoke_094102_stage0/training_dynamics/halt_coverage_nsup64.png" style="width:100%; max-width:560px"></td><td class="col-train-loss"><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_trust90_wcsoft2_divsup_lam015_aux00_smoke_094102_stage0/training_dynamics/train_lm_loss.png" style="width:100%; max-width:560px"></td><td class="col-train-acc"><img src="https://raw.githubusercontent.com/yoyostudy/trm-cr-experiment-photos/cr_0429_derive_ignore_trust90_wcsoft2_divsup_lam015_aux00_smoke_094102_stage0/training_dynamics/train_exact_accuracy.png" style="width:100%; max-width:560px"></td>
 </tr>
 </tbody></table>
-<script>MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]}};</script><script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
 <!-- WRONG-CELL-PENALTY-SECTION -->
 </body></html>
