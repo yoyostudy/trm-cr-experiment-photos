@@ -358,6 +358,7 @@ function setAll(show) {
 
 
 
+
 <!-- WRONG-CELL-PENALTY-SECTION -->
 <hr style="margin:32px 0; border:none; border-top:2px solid #ccc"/>
 <h1>Wrong-Cell Penalty</h1>
@@ -388,6 +389,24 @@ Sorted by hard@nsup64.</small>
 p = model softmax prob on its (wrong) predicted class &nbsp;|&nbsp; D = per-sample divisor &nbsp;|&nbsp;
 &lambda; = 0.15 &nbsp;|&nbsp; all 3 runs below use this form + soft cap.
 </div>
+</div>
+<div style="background:#fff7e6; padding:14px 18px; border-radius:8px; margin-bottom:14px; font-size:13px; line-height:1.65">
+<b>V1 vs V2 &mdash; what the divisor D actually is</b><br/>
+The <i>only</i> difference between V1 and V2 is the per-sample divisor D shared by CE-DI and wcpenalty.
+<ul style="margin:6px 0 6px 18px; padding:0">
+<li><b>V2 (&divide;81, <code>all81</code>)</b> &mdash; D = count of all valid cells &asymp; 81. Depends only on padding,
+so it is <b>constant</b> throughout training.</li>
+<li><b>V1 (&divide;56, <code>supervised</code>)</b> &mdash; D = count of <i>supervised</i> cells =
+<code>trust &cup; derivable</code> (cells the model gets right, plus cells the solver can logically derive
+from them). The leftover &mdash; cells neither trusted nor derivable &mdash; are the IGNORE cells.</li>
+</ul>
+Because <code>trust &cup; derivable</code> grows as the model improves (more correct cells &rarr; bigger trust
+set &rarr; solver derives more), <b>V1's divisor <u>rises</u> over training</b>, climbing from a small value
+toward &asymp;81. The "&divide;56" label is just a mid-training snapshot.<br/>
+<b>Consequence:</b> early in training V1's D is small while V2's is fixed at 81 &mdash; the two configs differ
+<b>most</b> then. Late in training V1's D &rarr; &asymp;81 &asymp; V2 &mdash; the two <b>converge</b>. So the
+V1/V2 gap <b>narrows</b> over training, which is consistent with their near-identical final eval
+(nsup64: 0.742 vs 0.735). The real divergence is an <i>early-training</i> effect, not a fixed offset.
 </div>
 <table class="main"><thead>
 <tr><th rowspan="2">Run</th><th rowspan="2">peak metrics<br/>(full test set)</th>
