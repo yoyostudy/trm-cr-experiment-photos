@@ -357,6 +357,7 @@ function setAll(show) {
 
 
 
+
 <!-- WRONG-CELL-PENALTY-SECTION -->
 <hr style="margin:32px 0; border:none; border-top:2px solid #ccc"/>
 <h1>Wrong-Cell Penalty</h1>
@@ -374,7 +375,7 @@ Sorted by hard@nsup64.</small>
 <div style="background:#eef4ff; padding:14px 18px; border-radius:8px; margin-bottom:14px; font-size:13px">
 <b>Formulas</b>
 <div style="font-family:Georgia,'Times New Roman',serif; font-size:15px; line-height:2.4; margin:8px 0 0 14px">
-<b>Total objective</b> &nbsp; &#8466;<sub>total</sub> = &#8466;<sub>CE-DI</sub> + &lambda;&middot;&#8466;<sub>wc</sub> + &frac12;(&#8466;<sub>q-halt</sub> + &#8466;<sub>q-cont</sub>)<br/>
+<b>Total objective</b> &nbsp; &#8466;<sub>total</sub> = &#8466;<sub>CE-DI</sub> + &lambda;&middot;&#8466;<sub>wc</sub> + &frac12;&#8466;<sub>q-halt</sub><br/>
 <b>wcpenalty</b> &nbsp; &#8466;<sub>wc</sub> = (1/D)&thinsp;&Sigma;<sub>i</sub> &minus;log(1&minus;p<sub>i</sub>)
 &nbsp;<span style="color:#666;font-family:sans-serif;font-size:12px">i over cells: pred &ne; label <b>and</b> p<sub>i</sub> &gt; &tau;<sub>wrong</sub></span><br/>
 <b>soft cap</b> &nbsp; &Phi;(p) = C&middot;tanh( &minus;log(1&minus;p) / C ) , &nbsp; C = 2
